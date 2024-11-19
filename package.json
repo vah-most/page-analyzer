@@ -1,17 +1,22 @@
 {
   "name": "a11y-analyzer",
   "version": "0.1.0",
+  "type": "module",
   "description": "",
   "main": "src/start.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd src && node start.ts",
-    "start": "cd src && node start.ts"
+    "dev": "npx tsx src/start.ts",
+    "start": "npx tsx src/start.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "puppeteer": "^23.8.0"
   }
 }
