@@ -1,4 +1,4 @@
-export type Permission = "create_auction" | "view_auction" | "bid";
+export type Permission = "create_request" | "view_requests";
 
 export interface User {
   id: string;
