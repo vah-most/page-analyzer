@@ -1,4 +1,4 @@
-# A11y-Analyzer
+# API-Gateway for A11y-Analyzer
 
 A RESTful API for managing a11y analysis, built with Node.js, Express, and TypeScript.
 
