@@ -1,12 +1,13 @@
-export type Permission = "create_request" | "view_requests";
+import { users } from "../generated/prisma";
+import { Request } from "express";
 
-export interface User {
-  id: string;
-  username: string;
-  password: string;
-  permissions: Permission[];
-}
+type User = users;
+
+export type CreateUserInput = Omit<User, "id" | "created_at">;
+export type UpdateUserInput = Partial<CreateUserInput>;
 
 export interface AuthenticatedRequest extends Request {
   user?: User;
 }
+
+export default User;

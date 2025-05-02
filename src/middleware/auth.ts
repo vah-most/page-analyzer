@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { Permission, AuthenticatedRequest } from "../types/User";
-import UserManager from "../controllers/UserManager";
 import Logger from "../logger/Logger";
+import { UserManager } from "../controllers/UserManager";
+import { AuthenticatedRequest } from "../types/User";
 
-export const authenticate = (
+export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   try {
     const authHeader = req.headers["authorization"];
 
@@ -28,7 +28,7 @@ export const authenticate = (
       .split(":");
 
     const userManager = UserManager.getInstance();
-    const user = userManager.getUserByCredentials(username, password);
+    const user = await userManager.getUserByCredentials(username, password);
 
     if (!user) {
       res.status(401).json({ error: "Invalid credentials" });
@@ -41,22 +41,4 @@ export const authenticate = (
     Logger.getInstance().error("Error authenticating:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-};
-
-export const requirePermission = (permission: Permission) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    try {
-      const user = (req as unknown as AuthenticatedRequest).user;
-
-      if (!user || !user.permissions.includes(permission)) {
-        res.status(403).json({ error: "Insufficient permissions" });
-        return;
-      }
-
-      next();
-    } catch (error) {
-      Logger.getInstance().error("Error requiring permission:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  };
 };

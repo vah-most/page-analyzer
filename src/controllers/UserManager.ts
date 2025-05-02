@@ -1,12 +1,14 @@
-import { User } from "../types/User";
-
-class UserManager {
+import { UserService } from "../model/user.service";
+import User from "../types/User";
+import Logger from "../logger/Logger";
+import { comparePasswords } from "../utils/auth";
+export class UserManager {
   private static instance: UserManager;
-  private users: User[];
+  private users: User[] = [];
+  private initialized = false;
 
-  private constructor() {
-    this.users = [];
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private constructor() {}
 
   public static getInstance(): UserManager {
     if (!UserManager.instance) {
@@ -15,26 +17,52 @@ class UserManager {
     return UserManager.instance;
   }
 
-  public getUsers(): User[] {
-    return this.users;
+  public async initialize(): Promise<void> {
+    if (this.initialized) {
+      return;
+    }
+
+    try {
+      Logger.getInstance().log("Initializing UserManager...");
+      this.users = await UserService.getAllUsers();
+      this.initialized = true;
+      Logger.getInstance().log(
+        `Successfully loaded ${this.users.length} users`
+      );
+    } catch (error) {
+      Logger.getInstance().error("Failed to initialize UserManager:", error);
+      throw error;
+    }
   }
 
-  public getUserById(id: User["id"]): User | undefined {
-    return this.users.find((user) => user.id === id);
+  public isInitialized(): boolean {
+    return this.initialized;
   }
 
-  public getUserByUsername(username: string): User | undefined {
-    return this.users.find((user) => user.username === username);
+  public async getUsers(): Promise<User[]> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    return this.users.map((user) => ({
+      ...user,
+      password: "",
+    }));
   }
 
-  public getUserByCredentials(
+  public async getUserByCredentials(
     username: string,
     password: string
-  ): User | undefined {
-    return this.users.find(
-      (user) => user.username === username && user.password === password
-    );
+  ): Promise<User | null> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    const user = this.users.find((u) => u.username === username);
+    if (!user) {
+      return null;
+    }
+
+    const isPasswordValid = await comparePasswords(password, user.password);
+    return isPasswordValid ? user : null;
   }
 }
-
-export default UserManager;

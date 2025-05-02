@@ -9,9 +9,11 @@ import { swaggerSpec } from "./config/swagger";
 import Logger from "./logger/Logger";
 import { SERVER_PORT, SERVER_URL, API_ROUTES } from "./config/constants";
 import { rateLimit } from "./middleware/rateLimit";
+import userRoutes from "./routes/user.routes";
+import { UserManager } from "./controllers/UserManager";
+import { AdminSetup } from "./config/admin.setup";
 
 dotenv.config();
-
 const app = express();
 
 // Middlewares
@@ -23,49 +25,56 @@ app.use(express.json());
 const swaggerMiddleware = swaggerUi.setup(swaggerSpec);
 app.use(API_ROUTES.DOCS, swaggerUi.serve, swaggerMiddleware);
 
-// Authentication and rate limiting
-app.use(authenticate);
-app.use(rateLimit);
+const initializeApp = async (): Promise<typeof app> => {
+  try {
+    await AdminSetup.initializeAdmin();
 
-// Routes
+    const userManager = UserManager.getInstance();
+    await userManager.initialize();
 
-// Error handler middleware > should be the last middleware
-app.use(errorHandler);
+    app.use(authenticate);
+    app.use(rateLimit);
+
+    app.use("/api/users", userRoutes);
+
+    app.use(errorHandler);
+
+    return app;
+  } catch (error) {
+    Logger.getInstance().error("Failed to initialize application:", error);
+    process.exit(1);
+  }
+};
 
 // Start the server
-
 if (require.main === module) {
-  const server = app.listen(SERVER_PORT, () => {
-    Logger.getInstance().log(`Server running at ${SERVER_URL}`);
-    Logger.getInstance().log(
-      `Swagger UI available at ${SERVER_URL}${API_ROUTES.DOCS}`
-    );
-  });
-
-  // Graceful shutdown
-  const gracefulShutdown = (): void => {
-    Logger.getInstance().log("Shutting down gracefully...");
-
-    // Clean up scheduled jobs
-
-    // Close the server
-    server.close(() => {
-      Logger.getInstance().log("Server closed");
-      process.exit(0);
+  initializeApp().then((app) => {
+    const server = app.listen(SERVER_PORT, () => {
+      Logger.getInstance().log(`Server running at ${SERVER_URL}`);
+      Logger.getInstance().log(
+        `Swagger UI available at ${SERVER_URL}${API_ROUTES.DOCS}`
+      );
     });
 
-    // Force shutdown after 10 seconds
-    setTimeout(() => {
-      Logger.getInstance().error(
-        "Could not close connections in time, forcefully shutting down"
-      );
-      process.exit(1);
-    }, 10000);
-  };
+    // Graceful shutdown
+    const gracefulShutdown = (): void => {
+      Logger.getInstance().log("Shutting down gracefully...");
+      server.close(() => {
+        Logger.getInstance().log("Server closed");
+        process.exit(0);
+      });
 
-  // Handle shutdown signals
-  process.on("SIGTERM", gracefulShutdown);
-  process.on("SIGINT", gracefulShutdown);
+      setTimeout(() => {
+        Logger.getInstance().error(
+          "Could not close connections in time, forcefully shutting down"
+        );
+        process.exit(1);
+      }, 10000);
+    };
+
+    process.on("SIGTERM", gracefulShutdown);
+    process.on("SIGINT", gracefulShutdown);
+  });
 }
 
 export default app;

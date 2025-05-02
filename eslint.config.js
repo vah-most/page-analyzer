@@ -54,6 +54,6 @@ module.exports = [
   },
   {
     // Ignore patterns
-    ignores: ["node_modules/**", "dist/**", "*.js"],
+    ignores: ["node_modules/**", "**/generated/**", "dist/**", "*.js"],
   },
 ];
