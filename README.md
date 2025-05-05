@@ -1,3 +1,9 @@
+# 🚧 Project Status: In Development 🚧
+
+**Note:** This project is currently under active development.  
+Many required modules and applications are not yet complete or available.  
+Features, APIs, and documentation are subject to change.
+
 # A11y-Analyzer
 
 A monorepo for the A11y-Analyzer project, built with Turborepo and pnpm. This project aims to provide a comprehensive accessibility analysis platform.

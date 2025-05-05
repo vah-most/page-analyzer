@@ -1,6 +1,5 @@
 {
   "name": "a11y-analyzer-api",
-  "version": "1.0.0",
   "description": "A11y-Analyzer API",
   "main": "src/index.ts",
   "scripts": {
@@ -24,8 +23,8 @@
     "performance",
     "api"
   ],
-  "author": "Mostafa Vahabzadeh",
   "license": "UNLICENSED",
+  "author": "Mostafa Vahabzadeh <vah.most.85@gmail.com>",
   "packageManager": "pnpm@10.4.1",
   "devDependencies": {
     "@eslint/js": "^9.24.0",
