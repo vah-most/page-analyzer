@@ -2,6 +2,8 @@ import { UserService } from "../model/user.service";
 import User from "../types/User";
 import Logger from "@logger";
 import { comparePasswords } from "../utils/auth";
+import { CreateUserInput } from "../types/User";
+
 export class UserManager {
   private static instance: UserManager;
   private users: User[] = [];
@@ -64,5 +66,19 @@ export class UserManager {
 
     const isPasswordValid = await comparePasswords(password, user.password);
     return isPasswordValid ? user : null;
+  }
+
+  public async createUser(userData: CreateUserInput): Promise<User> {
+    try {
+      const newUser = await UserService.createUser(userData);
+      this.users.push(newUser);
+      return {
+        ...newUser,
+        password: "",
+      };
+    } catch (error) {
+      Logger.getInstance().error("Failed to create user:", error);
+      throw error;
+    }
   }
 }
