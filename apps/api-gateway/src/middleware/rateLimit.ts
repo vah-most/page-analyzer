@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Logger from "../logger/Logger";
+import Logger from "@logger";
 import RateLimiter from "../controllers/RateLimiter";
 
 export const rateLimit = (

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Logger from "../logger/Logger";
+import Logger from "@logger";
 import { UserManager } from "../controllers/UserManager";
 import { AuthenticatedRequest } from "../types/User";
 

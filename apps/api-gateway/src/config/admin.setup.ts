@@ -1,5 +1,5 @@
 import prisma from "../model/database";
-import Logger from "../logger/Logger";
+import Logger from "@logger";
 import { hashPassword } from "../utils/auth";
 
 export class AdminSetup {

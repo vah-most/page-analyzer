@@ -1,6 +1,6 @@
 import { UserService } from "../model/user.service";
 import User from "../types/User";
-import Logger from "../logger/Logger";
+import Logger from "@logger";
 import { comparePasswords } from "../utils/auth";
 export class UserManager {
   private static instance: UserManager;

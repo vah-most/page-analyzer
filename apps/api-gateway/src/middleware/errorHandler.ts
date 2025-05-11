@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
-import Logger from "../logger/Logger";
+import Logger from "@logger";
 
 export class AppError extends Error {
   constructor(

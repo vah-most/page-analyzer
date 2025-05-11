@@ -1,3 +1,4 @@
+import "module-alias/register";
 import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
@@ -6,7 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import { authenticate } from "./middleware/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { swaggerSpec } from "./config/swagger";
-import Logger from "./logger/Logger";
+import Logger from "@logger";
 import { SERVER_PORT, SERVER_URL, API_ROUTES } from "./config/constants";
 import { rateLimit } from "./middleware/rateLimit";
 import userRoutes from "./routes/user.routes";
