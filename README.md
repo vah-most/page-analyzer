@@ -1,8 +1,7 @@
 # 🚧 Project Status: In Development 🚧
 
-**Note:** This project is currently under active development.  
-Many required modules and applications are not yet complete or available.  
-Features, APIs, and documentation are subject to change.
+**Note:** This project is currently in initial state and under active development.  
+Many required modules and applications are not yet complete or available.
 
 # A11y-Analyzer
 
@@ -13,8 +12,12 @@ A monorepo for the A11y-Analyzer project, built with Turborepo and pnpm. This pr
 ```
 a11y-monorepo/
 ├── apps/
-│   └── api-gateway/     # API Gateway service
-├── packages/            # Shared packages
+│   └── api-gateway/    # API Gateway service
+│   └── page-analyzer/  # Page Analyzer service
+│   └── ...
+├── packages/           # Shared packages
+│   └── logger/         # Logger package
+│   └── ...
 ├── turbo.json          # Turborepo configuration
 └── package.json        # Root package.json
 ```
@@ -28,7 +31,7 @@ a11y-monorepo/
 ### Prerequisites
 
 - Node.js (v18 or later)
-- pnpm (v10.4.1)
+- pnpm
 - PostgreSQL (for database)
 
 ### Installation

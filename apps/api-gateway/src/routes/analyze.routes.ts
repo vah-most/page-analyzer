@@ -20,7 +20,7 @@ router.post("/", async (req: Request, res: any) => {
       return res.status(401).json({ error: "User not authenticated" });
     }
 
-    const analyzerServiceUrl = `${ANALYZER_SERVICE.URL}/analyze`;
+    const analyzerServiceUrl = `${ANALYZER_SERVICE.URL}/api/analyze`;
 
     const response = await axios.post(
       analyzerServiceUrl,
