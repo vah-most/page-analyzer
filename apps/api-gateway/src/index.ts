@@ -13,6 +13,7 @@ import { rateLimit } from "./middleware/rateLimit";
 import userRoutes from "./routes/user.routes";
 import { UserManager } from "./controllers/UserManager";
 import { AdminSetup } from "./config/admin.setup";
+import analyzeRoutes from "./routes/analyze.routes";
 
 dotenv.config();
 const app = express();
@@ -37,6 +38,7 @@ const initializeApp = async (): Promise<typeof app> => {
     app.use(rateLimit);
 
     app.use("/api/users", userRoutes);
+    app.use("/api/analyze", analyzeRoutes);
 
     app.use(errorHandler);
 

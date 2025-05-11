@@ -10,9 +10,17 @@ export const SERVER_PORT = process.env.SERVER_PORT || DEFAULT_PORT;
 export const SERVER_HOST = process.env.SERVER_HOST || DEFAULT_HOST;
 export const SERVER_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
 
+// Analyzer Service Configuration
+export const ANALYZER_SERVICE = {
+  URL: process.env.ANALYZER_SERVICE_URL || "http://localhost:3001",
+  TIMEOUT: Number(process.env.ANALYZER_SERVICE_TIMEOUT) || 30000, // 30 seconds
+} as const;
+
 // API Routes
 export const API_ROUTES = {
   DOCS: "/docs",
+  USERS: "/api/users",
+  ANALYZE: "/api/analyze",
 } as const;
 
 // Swagger Configuration
