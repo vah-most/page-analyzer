@@ -30,6 +30,48 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res: any) => {
+  try {
+    const userId = parseInt(req.params.id);
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
+    const userManager = UserManager.getInstance();
+    const user = await userManager.getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get user" });
+  }
+});
+
+router.delete("/:id", async (req, res: any) => {
+  try {
+    const userId = parseInt(req.params.id);
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
+    const userManager = UserManager.getInstance();
+    await userManager.deleteUser(userId);
+    res.status(204).send();
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      res.status(500).json({ error: "Failed to delete user" });
+    }
+  }
+});
+
 /**
  * @swagger
  * /api/users:
@@ -67,6 +109,43 @@ router.post("/", async (req, res) => {
  *         description: User created successfully
  *       409:
  *         description: Username already exists
+ *       500:
+ *         description: Server error
+ * /api/users/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     security:
+ *       - basicAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User found
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ *   delete:
+ *     summary: Delete a user
+ *     security:
+ *       - basicAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User ID
+ *     responses:
+ *       204:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
  *       500:
  *         description: Server error
  */

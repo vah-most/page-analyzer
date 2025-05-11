@@ -81,4 +81,23 @@ export class UserManager {
       throw error;
     }
   }
+
+  public async getUserById(id: number): Promise<User | null> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    const user = this.users.find((u) => u.id === id);
+    return user ? { ...user, password: "" } : null;
+  }
+
+  public async deleteUser(id: number): Promise<void> {
+    try {
+      await UserService.deleteUser(id);
+      this.users = this.users.filter((u) => u.id !== id);
+    } catch (error) {
+      Logger.getInstance().error("Failed to delete user:", error);
+      throw error;
+    }
+  }
 }
